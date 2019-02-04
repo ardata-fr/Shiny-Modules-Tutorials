@@ -1,0 +1,15 @@
+Package: shinyModulesTuto
+Type: Package
+Title: Shiny applications and modules (Tutorials)
+Version: 0.1.0
+Authors@R: c(
+    person("Quentin", "Fazilleau", role = c("aut", "cre"),
+    email = "quentin.fazilleau@ardata.fr")
+    )
+Description: Examples Shiny application are accessable from this package.
+    They use the modules contains in the package itself as functions.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports: shiny, shinyjs, datasets, tools
+LazyData: true
+RoxygenNote: 6.1.1

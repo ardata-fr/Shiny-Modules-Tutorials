@@ -1,0 +1,18 @@
+.warn {
+    color:red;
+    font-style:italic;
+    font-size:10px;
+}
+
+.modulecall {
+    border:1px solid;
+    padding: 15px;
+}
+
+.show_id {
+    color:red;
+    margin-bottom: 10px;
+    font-style:italic;
+    font-size:10px;
+}
+
