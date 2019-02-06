@@ -99,18 +99,18 @@ apply_function <- function(input, output, session, variable = NULL, name = "") {
     })
     
     # ReactiveValue to return
-    toReturn <- reactiveValues( variable = NULL, 
+    toReturn <- reactiveValues( result = NULL, 
                                 trigger = NULL,
                                 transformation = NULL)
 
     # Apply function on variable
     observeEvent(input$AB_apply, {
         if (input$RB_funs == "log") {
-            toReturn$variable <- log(variable())
+            toReturn$result <- log(variable())
         } else if (input$RB_funs == "abs") {
-            toReturn$variable <- abs(variable())
+            toReturn$result <- abs(variable())
         } else if (input$RB_funs == "sqrt") {
-            toReturn$variable <- sqrt(variable())
+            toReturn$result <- sqrt(variable())
         }
         toReturn$trigger        <- ifelse(is.null(toReturn$trigger), 0, toReturn$trigger) + 1
         toReturn$transformation <- input$RB_funs

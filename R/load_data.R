@@ -68,10 +68,10 @@ load_dataUI <- function(id) {
 load_data <- function(input, output, session) {
 
     # Define the ReactiveValue to return : "toReturn"
-    # with slots "data_var_x" & "data_var_y"
+    # with slots "var_x" & "var_y"
     toReturn    <-  reactiveValues(
-                        data_var_x = NULL,
-                        data_var_y = NULL,
+                        var_x = NULL,
+                        var_y = NULL,
                         trigger = 0
                     )
 
@@ -96,8 +96,8 @@ load_data <- function(input, output, session) {
 
     # (Re)load button
     observeEvent(input$AB_load, {
-        toReturn$data_var_x     <- get(input$SI_dataset)[,input$SI_var_x]
-        toReturn$data_var_y     <- get(input$SI_dataset)[,input$SI_var_y]
+        toReturn$var_x     <- get(input$SI_dataset)[,input$SI_var_x]
+        toReturn$var_y     <- get(input$SI_dataset)[,input$SI_var_y]
         toReturn$var_x_name     <- input$SI_var_x
         toReturn$var_y_name     <- input$SI_var_y
         toReturn$trigger        <- toReturn$trigger + 1

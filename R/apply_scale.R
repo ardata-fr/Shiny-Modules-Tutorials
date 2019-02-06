@@ -87,12 +87,12 @@ apply_scale <- function(input, output, session, variable = NULL, name = "") {
     })
     
     # ReactiveValue to return
-    toReturn <- reactiveValues(variable = NULL, trigger = NULL)
+    toReturn <- reactiveValues(result = NULL, trigger = NULL)
     
     # Apply function on variable
     observeEvent(input$AB_scale, {
         toReturn$trigger        <- ifelse(is.null(toReturn$trigger), 0, toReturn$trigger) + 1
-        toReturn$variable <- scale(variable())[,1]
+        toReturn$result <- scale(variable())[,1]
     })
     
     return(toReturn)

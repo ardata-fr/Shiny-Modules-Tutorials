@@ -4,7 +4,7 @@
 \alias{runEx}
 \title{Run Shiny application}
 \usage{
-runEx(app, showcase = TRUE)
+runEx(app, showcase = FALSE)
 }
 \arguments{
 \item{app}{Character Application folder name}

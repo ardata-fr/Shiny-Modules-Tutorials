@@ -25,14 +25,14 @@ ui <- fluidPage(
             hr(),
             h3("Module apply_function"),
             fluidRow(
-                column(6, fluidRow(apply_functionUI(id = "mod2"))),
-                column(6, fluidRow(apply_functionUI(id = "mod3")))
+                column(6, fluidRow(apply_functionUI(id = "mod2_x"))),
+                column(6, fluidRow(apply_functionUI(id = "mod2_y")))
             ),
             hr(),
             h3("Module apply_scale"),
             fluidRow(
-                column(6, fluidRow(apply_scaleUI(id = "mod4"))),
-                column(6, fluidRow(apply_scaleUI(id = "mod5")))
+                column(6, fluidRow(apply_scaleUI(id = "mod3_x"))),
+                column(6, fluidRow(apply_scaleUI(id = "mod3_y")))
             )
         ),
         mainPanel(width = 6,
@@ -54,21 +54,22 @@ ui <- fluidPage(
 server <- function(input, output, session) {
 
     # ReactiveValue that "belongs" to Application and updated through all modules
-    dataset <- reactiveValues(data_var_x = NULL, data_var_y = NULL)
+    dataset <- reactiveValues(var_x = NULL, var_y = NULL)
 
-    ##############################
-    ## Module use 1 : Load Data ##
-    ##############################
+    #############################
+    ## Module 1 : Load Data    ##
+    ##     id call = "mod1"    ##
+    #############################
     {
         # Load dataset with module 1
-        data_module1 <- callModule(module = load_data, id = "mod1")
+        data_mod1 <- callModule(module = load_data, id = "mod1")
 
         # When dataset loaded (trigger change) :
         #   - Update dataset X & Y according to module load_data outputs "data_var_x" & "data_var_y"
         #   - Init history for X & Y
-        observeEvent(data_module1$trigger, {
-            dataset$data_var_x <- data_module1$data_var_x
-            dataset$data_var_y <- data_module1$data_var_y
+        observeEvent(data_mod1$trigger, {
+            dataset$var_x           <- data_mod1$var_x
+            dataset$var_y           <- data_mod1$var_y
             histo$transformations_x <- c()
             histo$transformations_y <- c()
         })
@@ -103,52 +104,54 @@ server <- function(input, output, session) {
         })
     }
 
-    #######################################
-    ## Module use 2 & 3 : Apply Function ##
-    #######################################
+    ########################################
+    ## Module 2 : Apply Function          ##
+    ##     id call = "mod2_x" & "mod2_y"  ##
+    ########################################
     {
         # Call modules apply_function for X & Y
-        data_module2   <- callModule(module = apply_function, id = "mod2", variable = reactive(dataset$data_var_x), name = "Axis X")
-        data_module3   <- callModule(module = apply_function, id = "mod3", variable = reactive(dataset$data_var_y), name = "Axis Y")
+        data_mod2_x   <- callModule(module = apply_function, id = "mod2_x", variable = reactive(dataset$var_x), name = "Axis X")
+        data_mod2_y   <- callModule(module = apply_function, id = "mod2_y", variable = reactive(dataset$var_y), name = "Axis Y")
 
         # When applied function (trigger change) on X :
-        #   - Update dataset X according to modules apply_function output "variable"
+        #   - Update dataset X according to modules apply_function output "result"
         #   - Update history for X according to modules apply_function output "transformation"
-        observeEvent(data_module2$trigger, {
-            dataset$data_var_x      <- data_module2$variable
-            histo$transformations_x <- c(histo$transformations_x, data_module2$transformation)
+        observeEvent(data_mod2_x$trigger, {
+            dataset$var_x           <- data_mod2_x$result
+            histo$transformations_x <- c(histo$transformations_x, data_mod2_x$transformation)
         })
 
         # When applied function (trigger change) on Y :
-        #   - Update dataset Y according to modules apply_function output "variable"
+        #   - Update dataset Y according to modules apply_function output "result"
         #   - Update history for Y according to modules apply_function output "transformation"
-        observeEvent(data_module3$trigger, {
-            dataset$data_var_y      <- data_module3$variable
-            histo$transformations_y <- c(histo$transformations_y, data_module3$transformation)
+        observeEvent(data_mod2_y$trigger, {
+            dataset$var_y           <- data_mod2_y$result
+            histo$transformations_y <- c(histo$transformations_y, data_mod2_y$transformation)
         })
     }
 
-    ####################################
-    ## Module use 4 & 5 : Apply Scale ##
-    ####################################
+    ########################################
+    ## Module 3 : Apply Scale             ##
+    ##     id call = "mod3_x" & "mod3_y"  ##
+    ########################################
     {
         # Call modules scale for X & Y
-        data_module4   <- callModule(module = apply_scale, id = "mod4", variable = reactive(dataset$data_var_x), name = "Axis X")
-        data_module5   <- callModule(module = apply_scale, id = "mod5", variable = reactive(dataset$data_var_y), name = "Axis Y")
+        data_mod3_x   <- callModule(module = apply_scale, id = "mod3_x", variable = reactive(dataset$var_x), name = "Axis X")
+        data_mod3_y   <- callModule(module = apply_scale, id = "mod3_y", variable = reactive(dataset$var_y), name = "Axis Y")
 
         # When applied scale (trigger change) on X :
-        #   - Update dataset X according to modules apply_scale output "variable"
+        #   - Update dataset X according to modules apply_scale output "result"
         #   - Update history for X with "scale"
-        observeEvent(data_module4$trigger, {
-            dataset$data_var_x      <- data_module4$variable
+        observeEvent(data_mod3_x$trigger, {
+            dataset$var_x           <- data_mod3_x$result
             histo$transformations_x <- c(histo$transformations_x, "scale")
         })
 
         # When applied scale (trigger change) on Y :
-        #   - Update dataset Y according to modules apply_scale output "variable"
+        #   - Update dataset Y according to modules apply_scale output "result"
         #   - Update history for Y  with "scale"
-        observeEvent(data_module5$trigger, {
-            dataset$data_var_y      <- data_module5$variable
+        observeEvent(data_mod3_y$trigger, {
+            dataset$var_y           <- data_mod3_y$result
             histo$transformations_y <- c(histo$transformations_y, "scale")
         })
     }
@@ -159,26 +162,26 @@ server <- function(input, output, session) {
     {
         # Plot output (hist) for X
         output$PL_var_x <- renderPlot({
-            req(dataset$data_var_x)
-            hist(dataset$data_var_x, main = data_module1$var_x_name, xlab = NULL)
+            req(dataset$var_x)
+            hist(dataset$var_x, main = data_mod1$var_x_name, xlab = NULL)
         })
 
         # Plot output (hist) for Y
         output$PL_var_y <- renderPlot({
-            req(dataset$data_var_y)
-            hist(dataset$data_var_y, main = data_module1$var_y_name, xlab = NULL)
+            req(dataset$var_y)
+            hist(dataset$var_y, main = data_mod1$var_y_name, xlab = NULL)
         })
 
         # Print output (summary) for X
         output$PR_var_x <- renderPrint({
-            req(dataset$data_var_x)
-            print(summary(dataset$data_var_x))
+            req(dataset$var_x)
+            print(summary(dataset$var_x))
         })
 
         # Print output (summary) for Y
         output$PR_var_y <- renderPrint({
-            req(dataset$data_var_y)
-            print(summary(dataset$data_var_y))
+            req(dataset$var_y)
+            print(summary(dataset$var_y))
         })
     }
 }
