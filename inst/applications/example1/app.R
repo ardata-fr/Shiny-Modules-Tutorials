@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyjs)
+library(shinyModulesTuto)
 
 ui <- fluidPage(
     useShinyjs(),
@@ -17,7 +18,7 @@ ui <- fluidPage(
                 load_dataUI(id = "mod1")
             ),
             hr(),
-            h3("History"),
+            h3("Functions applied"),
             fluidRow(
                 column(6, class = "history", uiOutput("ui_DIV_history_x")),
                 column(6, class = "history", uiOutput("ui_DIV_history_y"))
@@ -54,7 +55,8 @@ ui <- fluidPage(
 server <- function(input, output, session) {
 
     # ReactiveValue that "belongs" to Application and updated through all modules
-    dataset <- reactiveValues(var_x = NULL, var_y = NULL)
+    dataset <-  reactiveValues( var_x = NULL, var_y = NULL, 
+                                fun_applied_x = c(), fun_applied_y = c())
 
     #############################
     ## Module 1 : Load Data    ##
@@ -66,12 +68,12 @@ server <- function(input, output, session) {
 
         # When dataset loaded (trigger change) :
         #   - Update dataset X & Y according to module load_data outputs "data_var_x" & "data_var_y"
-        #   - Init history for X & Y
+        #   - Init history of functions applied for X & Y
         observeEvent(data_mod1$trigger, {
-            dataset$var_x           <- data_mod1$var_x
-            dataset$var_y           <- data_mod1$var_y
-            histo$transformations_x <- c()
-            histo$transformations_y <- c()
+            dataset$var_x         <- data_mod1$var_x
+            dataset$var_y         <- data_mod1$var_y
+            dataset$fun_applied_x <- c()
+            dataset$fun_applied_y <- c()
         })
     }
 
@@ -80,15 +82,15 @@ server <- function(input, output, session) {
     #######################
     {
         # Reactive Value used to keep history of functions applied.
-        histo <- reactiveValues(transformations_x = c(),
-                                transformations_y = c())
+        histo <- reactiveValues(fun_applied_x = c(),
+                                fun_applied_y = c())
 
         # UI output for X history
         output$ui_DIV_history_x <- renderUI({
             div(
                 "Transformation(s) on X :",
-                if (length(histo$transformations_x) > 0) {
-                    tags$ul(HTML(sapply(histo$transformations_x, function(x) as.character(tags$li(x)))))
+                if (length(dataset$fun_applied_x) > 0) {
+                    tags$ul(HTML(sapply(dataset$fun_applied_x, function(x) as.character(tags$li(x)))))
                 }
             )
         })
@@ -97,8 +99,8 @@ server <- function(input, output, session) {
         output$ui_DIV_history_y <- renderUI({
             div(
                 "Transformation(s) on Y :",
-                if (length(histo$transformations_y) > 0) {
-                    tags$ul(HTML(sapply(histo$transformations_y, function(x) as.character(tags$li(x)))))
+                if (length(dataset$fun_applied_y) > 0) {
+                    tags$ul(HTML(sapply(dataset$fun_applied_y, function(x) as.character(tags$li(x)))))
                 }
             )
         })
@@ -115,18 +117,18 @@ server <- function(input, output, session) {
 
         # When applied function (trigger change) on X :
         #   - Update dataset X according to modules apply_function output "result"
-        #   - Update history for X according to modules apply_function output "transformation"
+        #   - Update history of functions applied for X according to modules apply_function output "transformation"
         observeEvent(data_mod2_x$trigger, {
-            dataset$var_x           <- data_mod2_x$result
-            histo$transformations_x <- c(histo$transformations_x, data_mod2_x$transformation)
+            dataset$var_x         <- data_mod2_x$result
+            dataset$fun_applied_x <- c(dataset$fun_applied_x, data_mod2_x$transformation)
         })
 
         # When applied function (trigger change) on Y :
         #   - Update dataset Y according to modules apply_function output "result"
-        #   - Update history for Y according to modules apply_function output "transformation"
+        #   - Update history of functions applied for Y according to modules apply_function output "transformation"
         observeEvent(data_mod2_y$trigger, {
-            dataset$var_y           <- data_mod2_y$result
-            histo$transformations_y <- c(histo$transformations_y, data_mod2_y$transformation)
+            dataset$var_y         <- data_mod2_y$result
+            dataset$fun_applied_y <- c(dataset$fun_applied_y, data_mod2_y$transformation)
         })
     }
 
@@ -141,18 +143,18 @@ server <- function(input, output, session) {
 
         # When applied scale (trigger change) on X :
         #   - Update dataset X according to modules apply_scale output "result"
-        #   - Update history for X with "scale"
+        #   - Update history of functions applied for X with "scale"
         observeEvent(data_mod3_x$trigger, {
-            dataset$var_x           <- data_mod3_x$result
-            histo$transformations_x <- c(histo$transformations_x, "scale")
+            dataset$var_x         <- data_mod3_x$result
+            dataset$fun_applied_x <- c(dataset$fun_applied_x, "scale")
         })
 
         # When applied scale (trigger change) on Y :
         #   - Update dataset Y according to modules apply_scale output "result"
-        #   - Update history for Y  with "scale"
+        #   - Update history of functions applied for Y  with "scale"
         observeEvent(data_mod3_y$trigger, {
-            dataset$var_y           <- data_mod3_y$result
-            histo$transformations_y <- c(histo$transformations_y, "scale")
+            dataset$var_y         <- data_mod3_y$result
+            dataset$fun_applied_y <- c(dataset$fun_applied_y, "scale")
         })
     }
 

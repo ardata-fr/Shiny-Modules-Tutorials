@@ -2,7 +2,7 @@
 datasets <- function() {
     tmp <-  unlist(
         sapply(ls("package:datasets"), function(x){
-            class(get(x))=="data.frame"
+            "data.frame" %in% class(get(x))
         })
     )
     names(tmp[tmp])
@@ -24,10 +24,10 @@ loadModulesCSS <- function(cssFilenames = c()) {
     if (length(cssFilenames) == 0) {
         cssFilenames <- list.files(path = system.file(package = "shinyModulesTuto", "www"), pattern = "*[.]css")
     }
-    
+
     # Add ressources
     eval.parent(addResourcePath('www', system.file(package="shinyModulesTuto", "www")))
-    
+
     links <- list()
     for (f in cssFilenames) {
         if (file_ext(f) == "css") {

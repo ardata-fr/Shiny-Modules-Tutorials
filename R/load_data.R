@@ -17,9 +17,6 @@
 load_dataUI <- function(id) {
     ns <- NS(id)
     
-    #tagList(tags$head(
-    #    loadCSS("style.css")
-    #),
     column(12, class = "modulecall",
         fluidRow(
             column(12,
