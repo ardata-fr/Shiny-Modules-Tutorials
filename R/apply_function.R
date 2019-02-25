@@ -1,5 +1,6 @@
 #' @export
 #' @import shiny
+#' @importFrom shinyWidgets actionBttn radioGroupButtons
 #' @importFrom shinyjs enable disable disabled
 #' @title apply_functionUI
 #' @description This function has to be set in the UI part of a shiny application
@@ -21,7 +22,7 @@
 apply_functionUI <- function(id) {
     ns <- NS(id)
     
-    column(12, class = "modulecall",
+    column(12,
         fluidRow(
             column(12,
                 div(class = "show_id", paste("call id : ", id))
@@ -34,7 +35,7 @@ apply_functionUI <- function(id) {
         ),
         fluidRow(
             column(12,
-                shinyjs::disabled(actionButton(ns("AB_apply"), label = "Apply function !"))
+                uiOutput(ns("ui_AB_apply"))
             )
         ),
         fluidRow(
@@ -47,8 +48,9 @@ apply_functionUI <- function(id) {
 
 #' @export
 #' @import shiny
+#' @importFrom shinyWidgets actionBttn radioGroupButtons
 #' @importFrom shinyjs enable disable disabled
-#' @title apply_functionUI
+#' @title apply_function
 #' @description This function has to be set in the Server part of a shiny application
 #'     It add a windows containing a radioButton to apply a function
 #'     on a numeric vector.
@@ -74,30 +76,30 @@ apply_function <- function(input, output, session, variable = NULL, name = "") {
     # Warning if no data loaded
     output$ui_DIV_warn <- renderUI({
         if (is.null(variable())) {
-            span(class = "warn", "No dataset loaded")
+            div(
+                tags$br(),
+                span(class = "warn", "No dataset loaded")
+            )
         }
     })
     
     # Radio Button
     output$ui_RB_funs <- renderUI({
-        if (name != "") {
-            label_ <- paste("Apply function on", name)
-        } else {
-            label_ <- paste("No variable selected yet")
-        }
-        radioButtons(ns("RB_funs"), label = label_, choices = c("none", "log", "abs", "sqrt"), selected = "none")
+        radioGroupButtons(ns("RB_funs"), label = "Function", choices = c("log", "abs", "sqrt"), 
+            selected = "log", direction = "vertical")
     })
     
-    # Enable / Disable the radioButton if variable inpute
-    observe({
-        req(input$RB_funs)
-        if (!is.null(variable()) & input$RB_funs != "none") {
-            shinyjs::enable("AB_apply")
+    # apply button
+    output$ui_AB_apply <- renderUI({
+        if (is.null(variable())) {
+            shinyjs::disabled(
+                actionBttn(inputId = ns("AB_apply"), label = "Apply function !", style = "pill", color = "success", size = "xs")
+            )
         } else {
-            shinyjs::disable("AB_apply")
+            actionBttn(inputId = ns("AB_apply"), label = "Apply function !", style = "pill", color = "success", size = "xs")
         }
     })
-    
+
     # ReactiveValue to return
     toReturn <- reactiveValues( result = NULL, 
                                 trigger = NULL,
@@ -114,7 +116,6 @@ apply_function <- function(input, output, session, variable = NULL, name = "") {
         }
         toReturn$trigger        <- ifelse(is.null(toReturn$trigger), 0, toReturn$trigger) + 1
         toReturn$transformation <- input$RB_funs
-        updateRadioButtons(session, "RB_funs", selected = "none")
     })
     
     return(toReturn)

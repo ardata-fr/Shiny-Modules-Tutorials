@@ -20,7 +20,7 @@
 apply_scaleUI <- function(id) {
     ns <- NS(id)
     
-    column(12, class = "modulecall",
+    column(12,
         fluidRow(
             column(12,
                 div(class = "show_id", paste("call id : ", id))
@@ -74,15 +74,12 @@ apply_scale <- function(input, output, session, variable = NULL, name = "") {
     
     # Action button with custom label
     output$ui_AB_scale <- renderUI({
-        shinyjs::disabled(actionButton(ns("AB_scale"), label = paste("Scale", name)))
-    })
-    
-    # Enable / Disable the Scale button if variable input
-    observe({
         if (!is.null(variable())) {
-            shinyjs::enable("AB_scale")
+            actionBttn(inputId = ns("AB_scale"), label = paste("Scale", name), style = "pill", color = "warning", size = "xs")
         } else {
-            shinyjs::disable("AB_scale")
+            shinyjs::disabled(
+                actionBttn(inputId = ns("AB_scale"), label = paste("Scale", name), style = "pill", color = "warning", size = "xs")
+            )
         }
     })
     
@@ -91,8 +88,8 @@ apply_scale <- function(input, output, session, variable = NULL, name = "") {
     
     # Apply function on variable
     observeEvent(input$AB_scale, {
-        toReturn$trigger        <- ifelse(is.null(toReturn$trigger), 0, toReturn$trigger) + 1
-        toReturn$result <- scale(variable())[,1]
+        toReturn$trigger <- ifelse(is.null(toReturn$trigger), 0, toReturn$trigger) + 1
+        toReturn$result  <- scale(variable())[,1]
     })
     
     return(toReturn)

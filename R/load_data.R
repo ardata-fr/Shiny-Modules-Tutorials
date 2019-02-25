@@ -1,5 +1,6 @@
 #' @export
 #' @import shiny
+#' @importFrom shinyWidgets actionBttn
 #' @importFrom shinyjs enable disable disabled
 #' @title load_dataUI
 #' @description This function has to be set in the UI part of a shiny application
@@ -17,7 +18,7 @@
 load_dataUI <- function(id) {
     ns <- NS(id)
     
-    column(12, class = "modulecall",
+    column(12,
         fluidRow(
             column(12,
                 div(class = "show_id", paste("call id : ", id))
@@ -30,15 +31,15 @@ load_dataUI <- function(id) {
         ),
         fluidRow(
             column(6,
-                selectInput(ns("SI_var_x"), label = "X axis", choices = NULL)
+                selectInput(ns("SI_var_x"), label = "X vector", choices = NULL)
             ),
             column(6,
-                selectInput(ns("SI_var_y"), label = "Y axis", choices = NULL)
+                selectInput(ns("SI_var_y"), label = "Y vector", choices = NULL)
             )
         ),
         fluidRow(
             column(12,
-                shinyjs::disabled(actionButton(ns("AB_load"), label = "(Re)load !"))
+                shinyjs::disabled(actionBttn(inputId = ns("AB_load"), label = "(Re) load !", style = "pill", color = "primary", size = "xs"))
             )
         )
     )
@@ -47,6 +48,7 @@ load_dataUI <- function(id) {
 #' @export
 #' @import shiny
 #' @importFrom shinyjs enable disable disabled
+#' @importFrom shinyWidgets actionBttn
 #' @title load_dataUI
 #' @description This function has to be set in the Server part of a shiny application
 #'     it adds the load data windows.

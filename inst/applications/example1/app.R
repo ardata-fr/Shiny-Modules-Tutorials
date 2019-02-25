@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyjs)
+library(shinyWidgets)
 library(shinyModulesTuto)
 
 ui <- fluidPage(
@@ -9,46 +10,61 @@ ui <- fluidPage(
         loadModulesCSS("modules_styling.css")
     ),
 
-    title = "Demo use of modules",
+    tags$h1("Demo use of modules"),
 
-    sidebarLayout(
-        sidebarPanel(width = 6,
-            h3("Module load_data"),
-            fluidRow(
-                load_dataUI(id = "mod1")
-            ),
-            hr(),
-            h3("Functions applied"),
-            fluidRow(
-                column(6, class = "history", uiOutput("ui_DIV_history_x")),
-                column(6, class = "history", uiOutput("ui_DIV_history_y"))
-            ),
-            hr(),
-            h3("Module apply_function"),
-            fluidRow(
-                column(6, fluidRow(apply_functionUI(id = "mod2_x"))),
-                column(6, fluidRow(apply_functionUI(id = "mod2_y")))
-            ),
-            hr(),
-            h3("Module apply_scale"),
-            fluidRow(
-                column(6, fluidRow(apply_scaleUI(id = "mod3_x"))),
-                column(6, fluidRow(apply_scaleUI(id = "mod3_y")))
-            )
+    tags$div(style = "display:flex",
+        dropdownButton(inputId = "dd-data",
+            h3("Module 1 : load_data"),
+            load_dataUI(id = "mod1"),
+            circle = TRUE,
+            status = "primary",
+            icon = icon("database"),
+            width = "500px",
+            tooltip = tooltipOptions(title = "Load data")
         ),
-        mainPanel(width = 6,
-            h3("Histogram & Summary"),
-            tabsetPanel(type = "tabs",
-                tabPanel("X",
-                    plotOutput("PL_var_x"),
-                    verbatimTextOutput("PR_var_x")
-                ),
-                tabPanel("Y",
-                    plotOutput("PL_var_y"),
-                    verbatimTextOutput("PR_var_y")
-                )
-            )
+        dropdownButton(inputId = "dd-fun",
+            h3("Module 2 : apply_function"),
+            fluidRow(
+                column(6, apply_functionUI(id = "mod2_x")),
+                column(6, apply_functionUI(id = "mod2_y"))
+            ),
+            circle = TRUE,
+            status = "success",
+            icon = icon("gear"),
+            width = "500px",
+            tooltip = tooltipOptions(title = "Apply a function")
+        ),
+        dropdownButton(inputId = "dd-scale",
+            h3("Module 3 : apply_scale"),
+            fluidRow(
+                column(6, apply_scaleUI(id = "mod3_x")),
+                column(6, apply_scaleUI(id = "mod3_y"))
+            ),
+            circle = TRUE,
+            status = "warning",
+            icon = icon("balance-scale"),
+            width = "500px",
+            tooltip = tooltipOptions(title = "Scale data")
         )
+    ),
+    h3("Histogram & Summary"),
+    fluidRow(
+        column(6,
+            h4("X vector"),
+            uiOutput("ui_PL_var_x"),
+            verbatimTextOutput("PR_var_x")
+        ),
+        column(6,
+            h4("Y vector"),
+            uiOutput("ui_PL_var_y"),
+            verbatimTextOutput("PR_var_y")
+        )
+    ),
+    hr(),
+    h3("Module 4 : funHistory"),
+    fluidRow(
+        column(6, funHistoryUI(id = "mod4_x")),
+        column(6, funHistoryUI(id = "mod4_y"))
     )
 )
 
@@ -70,39 +86,12 @@ server <- function(input, output, session) {
         #   - Update dataset X & Y according to module load_data outputs "data_var_x" & "data_var_y"
         #   - Init history of functions applied for X & Y
         observeEvent(data_mod1$trigger, {
+            req(data_mod1$trigger>0)
             dataset$var_x         <- data_mod1$var_x
             dataset$var_y         <- data_mod1$var_y
-            dataset$fun_applied_x <- c()
-            dataset$fun_applied_y <- c()
-        })
-    }
-
-    #######################
-    ## Functions History ##
-    #######################
-    {
-        # Reactive Value used to keep history of functions applied.
-        histo <- reactiveValues(fun_applied_x = c(),
-                                fun_applied_y = c())
-
-        # UI output for X history
-        output$ui_DIV_history_x <- renderUI({
-            div(
-                "Transformation(s) on X :",
-                if (length(dataset$fun_applied_x) > 0) {
-                    tags$ul(HTML(sapply(dataset$fun_applied_x, function(x) as.character(tags$li(x)))))
-                }
-            )
-        })
-
-        # UI output for Y history
-        output$ui_DIV_history_y <- renderUI({
-            div(
-                "Transformation(s) on Y :",
-                if (length(dataset$fun_applied_y) > 0) {
-                    tags$ul(HTML(sapply(dataset$fun_applied_y, function(x) as.character(tags$li(x)))))
-                }
-            )
+            histo$fun_applied_x   <- c()
+            histo$fun_applied_y   <- c()
+            toggleDropdownButton("dd-data")
         })
     }
 
@@ -112,23 +101,23 @@ server <- function(input, output, session) {
     ########################################
     {
         # Call modules apply_function for X & Y
-        data_mod2_x   <- callModule(module = apply_function, id = "mod2_x", variable = reactive(dataset$var_x), name = "Axis X")
-        data_mod2_y   <- callModule(module = apply_function, id = "mod2_y", variable = reactive(dataset$var_y), name = "Axis Y")
+        data_mod2_x   <- callModule(module = apply_function, id = "mod2_x", variable = reactive(dataset$var_x), name = "X vector")
+        data_mod2_y   <- callModule(module = apply_function, id = "mod2_y", variable = reactive(dataset$var_y), name = "Y vector")
 
         # When applied function (trigger change) on X :
         #   - Update dataset X according to modules apply_function output "result"
         #   - Update history of functions applied for X according to modules apply_function output "transformation"
         observeEvent(data_mod2_x$trigger, {
-            dataset$var_x         <- data_mod2_x$result
-            dataset$fun_applied_x <- c(dataset$fun_applied_x, data_mod2_x$transformation)
+            dataset$var_x       <- data_mod2_x$result
+            histo$fun_applied_x <- c(histo$fun_applied_x, data_mod2_x$transformation)
         })
 
         # When applied function (trigger change) on Y :
         #   - Update dataset Y according to modules apply_function output "result"
         #   - Update history of functions applied for Y according to modules apply_function output "transformation"
         observeEvent(data_mod2_y$trigger, {
-            dataset$var_y         <- data_mod2_y$result
-            dataset$fun_applied_y <- c(dataset$fun_applied_y, data_mod2_y$transformation)
+            dataset$var_y       <- data_mod2_y$result
+            histo$fun_applied_y <- c(histo$fun_applied_y, data_mod2_y$transformation)
         })
     }
 
@@ -138,40 +127,65 @@ server <- function(input, output, session) {
     ########################################
     {
         # Call modules scale for X & Y
-        data_mod3_x   <- callModule(module = apply_scale, id = "mod3_x", variable = reactive(dataset$var_x), name = "Axis X")
-        data_mod3_y   <- callModule(module = apply_scale, id = "mod3_y", variable = reactive(dataset$var_y), name = "Axis Y")
+        data_mod3_x   <- callModule(module = apply_scale, id = "mod3_x", variable = reactive(dataset$var_x), name = "X vector")
+        data_mod3_y   <- callModule(module = apply_scale, id = "mod3_y", variable = reactive(dataset$var_y), name = "Y vector")
 
         # When applied scale (trigger change) on X :
         #   - Update dataset X according to modules apply_scale output "result"
         #   - Update history of functions applied for X with "scale"
         observeEvent(data_mod3_x$trigger, {
-            dataset$var_x         <- data_mod3_x$result
-            dataset$fun_applied_x <- c(dataset$fun_applied_x, "scale")
+            dataset$var_x       <- data_mod3_x$result
+            histo$fun_applied_x <- c(histo$fun_applied_x, "scale")
         })
 
         # When applied scale (trigger change) on Y :
         #   - Update dataset Y according to modules apply_scale output "result"
         #   - Update history of functions applied for Y  with "scale"
         observeEvent(data_mod3_y$trigger, {
-            dataset$var_y         <- data_mod3_y$result
-            dataset$fun_applied_y <- c(dataset$fun_applied_y, "scale")
+            dataset$var_y       <- data_mod3_y$result
+            histo$fun_applied_y <- c(histo$fun_applied_y, "scale")
         })
     }
-
+    
+    ########################################
+    ## Module 4 : Functions History       ##
+    ##     id call = "mod4_x" & "mod4_y"  ##
+    ########################################
+    {
+        # Reactive Value used to keep history of functions applied.
+        histo <- reactiveValues(fun_applied_x = c(),
+                                fun_applied_y = c())
+        
+        callModule(module = funHistory, id = "mod4_x", histo = reactive(histo$fun_applied_x), name = "X vector")
+        callModule(module = funHistory, id = "mod4_y", histo = reactive(histo$fun_applied_y), name = "Y vector")
+    }
+    
     ###########################
     ## Output in application ##
     ###########################
     {
         # Plot output (hist) for X
         output$PL_var_x <- renderPlot({
-            req(dataset$var_x)
+            # req(dataset$var_x)
             hist(dataset$var_x, main = data_mod1$var_x_name, xlab = NULL)
+        })
+
+        # Use a renderUI of renderPlot to let empty space if no plot
+        output$ui_PL_var_x <- renderUI({
+            if (is.null(dataset$var_x)) return(NULL)
+            plotOutput("PL_var_x")
         })
 
         # Plot output (hist) for Y
         output$PL_var_y <- renderPlot({
-            req(dataset$var_y)
+            # req(dataset$var_y)
             hist(dataset$var_y, main = data_mod1$var_y_name, xlab = NULL)
+        })
+
+        # Use a renderUI of renderPlot to let empty space if no plot
+        output$ui_PL_var_y <- renderUI({
+            if (is.null(dataset$var_y)) return(NULL)
+            plotOutput("PL_var_y")
         })
 
         # Print output (summary) for X

@@ -3,3 +3,10 @@
     padding: 15px;
 }
 
+.dd-align {
+  display: flex;
+}
+
+.dropdown {
+    padding-right: 10px;
+}
