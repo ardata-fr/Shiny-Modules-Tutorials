@@ -37,7 +37,7 @@ ui <- fluidPage(
             )
         ),
         mainPanel(width = 6,
-            h3("Application"),
+            h3("Histogram & Summary"),
             tabsetPanel(type = "tabs",
                 tabPanel("X",
                     plotOutput("PL_var_x"),
@@ -55,7 +55,7 @@ ui <- fluidPage(
 server <- function(input, output, session) {
 
     # ReactiveValue that "belongs" to Application and updated through all modules
-    dataset <-  reactiveValues( var_x = NULL, var_y = NULL, 
+    dataset <-  reactiveValues( var_x = NULL, var_y = NULL,
                                 fun_applied_x = c(), fun_applied_y = c())
 
     #############################
