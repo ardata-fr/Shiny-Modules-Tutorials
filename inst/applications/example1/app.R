@@ -74,10 +74,10 @@ server <- function(input, output, session) {
     dataset <-  reactiveValues( var_x = NULL, var_y = NULL,
                                 fun_applied_x = c(), fun_applied_y = c())
 
-    #############################
-    ## Module 1 : Load Data    ##
-    ##     id call = "mod1"    ##
-    #############################
+    ############################+
+    ## Module 1 : Load Data  ####
+    ##     id call = "mod1"  ###+
+    ############################+
     {
         # Load dataset with module 1
         data_mod1 <- callModule(module = load_data, id = "mod1")
@@ -95,10 +95,10 @@ server <- function(input, output, session) {
         })
     }
 
-    ########################################
-    ## Module 2 : Apply Function          ##
-    ##     id call = "mod2_x" & "mod2_y"  ##
-    ########################################
+    #########################################+
+    ## Module 2 : Apply Function          ####
+    ##     id call = "mod2_x" & "mod2_y"  ###+
+    #########################################+
     {
         # Call modules apply_function for X & Y
         data_mod2_x   <- callModule(module = apply_function, id = "mod2_x", variable = reactive(dataset$var_x), name = "X vector")
@@ -121,10 +121,10 @@ server <- function(input, output, session) {
         })
     }
 
-    ########################################
-    ## Module 3 : Apply Scale             ##
-    ##     id call = "mod3_x" & "mod3_y"  ##
-    ########################################
+    #########################################+
+    ## Module 3 : Apply Scale             ####
+    ##     id call = "mod3_x" & "mod3_y"  ###+
+    #########################################+
     {
         # Call modules scale for X & Y
         data_mod3_x   <- callModule(module = apply_scale, id = "mod3_x", variable = reactive(dataset$var_x), name = "X vector")
@@ -146,23 +146,23 @@ server <- function(input, output, session) {
             histo$fun_applied_y <- c(histo$fun_applied_y, "scale")
         })
     }
-    
-    ########################################
-    ## Module 4 : Functions History       ##
-    ##     id call = "mod4_x" & "mod4_y"  ##
-    ########################################
+
+    #########################################+
+    ## Module 4 : Functions History       ####
+    ##     id call = "mod4_x" & "mod4_y"  ###+
+    #########################################+
     {
         # Reactive Value used to keep history of functions applied.
         histo <- reactiveValues(fun_applied_x = c(),
                                 fun_applied_y = c())
-        
+
         callModule(module = funHistory, id = "mod4_x", histo = reactive(histo$fun_applied_x), name = "X vector")
         callModule(module = funHistory, id = "mod4_y", histo = reactive(histo$fun_applied_y), name = "Y vector")
     }
-    
-    ###########################
-    ## Output in application ##
-    ###########################
+
+    ############################+
+    ## Output in application ####
+    ############################+
     {
         # Plot output (hist) for X
         output$PL_var_x <- renderPlot({
