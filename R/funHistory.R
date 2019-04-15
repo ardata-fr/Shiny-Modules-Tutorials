@@ -47,7 +47,7 @@ funHistoryUI <- function(id) {
 #' # In Server
 #' callModule(module = funHistory, id = "id", histo = reactive(histo$fun_applied_x), name = "X vector")
 #'}
-funHistory <- function(input, output, session, histo = NULL, name = "") {
+funHistory <- function(input, output, session, histo = NULL, name = "Function historic") {
     ns <- session$ns
 
     output$ui_DIV_history <- renderUI({

@@ -17,30 +17,13 @@
 #'}
 load_dataUI <- function(id) {
     ns <- NS(id)
-    
-    column(12,
-        fluidRow(
-            column(12,
-                div(class = "show_id", paste("call id : ", id))
-            )
-        ),
-        fluidRow(
-            column(12,
-                selectInput(ns("SI_dataset"), label = "dataset", choices = datasets(), selected = "iris")
-            )
-        ),
-        fluidRow(
-            column(6,
-                selectInput(ns("SI_var_x"), label = "X vector", choices = NULL)
-            ),
-            column(6,
-                selectInput(ns("SI_var_y"), label = "Y vector", choices = NULL)
-            )
-        ),
-        fluidRow(
-            column(12,
-                shinyjs::disabled(actionBttn(inputId = ns("AB_load"), label = "(Re) load !", style = "pill", color = "primary", size = "xs"))
-            )
+
+    shinyjs::useShinyjs()
+    fluidRow(
+        column(12,
+            selectInput(ns("SI_dataset"), label = "dataset", choices = datasets(), selected = "iris"),
+            selectInput(ns("SI_var"), label = "choose variable", choices = NULL),
+            shinyjs::disabled(actionBttn(inputId = ns("AB_load"), label = "(Re) load !", style = "pill", color = "primary", size = "xs"))
         )
     )
 }
@@ -67,10 +50,10 @@ load_dataUI <- function(id) {
 load_data <- function(input, output, session) {
 
     # Define the ReactiveValue to return : "toReturn"
-    # with slots "var_x" & "var_y"
+    # with slots "variable", "variable_name" & "trigger"
     toReturn    <-  reactiveValues(
-                        var_x = NULL,
-                        var_y = NULL,
+                        variables = NULL,
+                        variable_name = NULL,
                         trigger = 0
                     )
 
@@ -79,14 +62,13 @@ load_data <- function(input, output, session) {
         if (!is.null(input$SI_dataset)) {
             df <- get(input$SI_dataset)
             choices <- colnames(df)[sapply(df, is.numeric)]
-            updateSelectInput(session, "SI_var_x", choices = choices)
-            updateSelectInput(session, "SI_var_y", choices = choices)
+            updateSelectInput(session, "SI_var", choices = choices)
         }
     })
 
     # Enable / Disable (Re)load button
     observe({
-        if (input$SI_var_y != "" & input$SI_var_x != "") {
+        if (input$SI_var != "") {
             shinyjs::enable("AB_load")
         } else {
             shinyjs::disable("AB_load")
@@ -95,10 +77,8 @@ load_data <- function(input, output, session) {
 
     # (Re)load button
     observeEvent(input$AB_load, {
-        toReturn$var_x     <- get(input$SI_dataset)[,input$SI_var_x]
-        toReturn$var_y     <- get(input$SI_dataset)[,input$SI_var_y]
-        toReturn$var_x_name     <- input$SI_var_x
-        toReturn$var_y_name     <- input$SI_var_y
+        toReturn$variable       <- get(input$SI_dataset)[,input$SI_var]
+        toReturn$variable_name  <- input$SI_var
         toReturn$trigger        <- toReturn$trigger + 1
     })
 

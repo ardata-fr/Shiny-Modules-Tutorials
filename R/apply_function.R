@@ -21,27 +21,12 @@
 #'}
 apply_functionUI <- function(id) {
     ns <- NS(id)
-    
-    column(12,
-        fluidRow(
-            column(12,
-                div(class = "show_id", paste("call id : ", id))
-            )
-        ),
-        fluidRow(
-            column(12,
-                uiOutput(ns("ui_RB_funs"))
-            )
-        ),
-        fluidRow(
-            column(12,
-                uiOutput(ns("ui_AB_apply"))
-            )
-        ),
-        fluidRow(
-            column(12,
-                uiOutput(ns("ui_DIV_warn"))
-            )
+
+    fluidRow(
+        column(12,
+            uiOutput(ns("ui_RB_funs")),
+            uiOutput(ns("ui_AB_apply")),
+            uiOutput(ns("ui_DIV_warn"))
         )
     )
 }
@@ -72,7 +57,7 @@ apply_functionUI <- function(id) {
 #'}
 apply_function <- function(input, output, session, variable = NULL, name = "") {
     ns <- session$ns
-    
+
     # Warning if no data loaded
     output$ui_DIV_warn <- renderUI({
         if (is.null(variable())) {
@@ -82,13 +67,13 @@ apply_function <- function(input, output, session, variable = NULL, name = "") {
             )
         }
     })
-    
+
     # Radio Button
     output$ui_RB_funs <- renderUI({
-        radioGroupButtons(ns("RB_funs"), label = "Function", choices = c("log", "abs", "sqrt"), 
+        radioGroupButtons(ns("RB_funs"), label = "Function", choices = c("log", "abs", "sqrt"),
             selected = "log", direction = "vertical")
     })
-    
+
     # apply button
     output$ui_AB_apply <- renderUI({
         if (is.null(variable())) {
@@ -101,7 +86,7 @@ apply_function <- function(input, output, session, variable = NULL, name = "") {
     })
 
     # ReactiveValue to return
-    toReturn <- reactiveValues( result = NULL, 
+    toReturn <- reactiveValues( result = NULL,
                                 trigger = NULL,
                                 transformation = NULL)
 
@@ -117,6 +102,6 @@ apply_function <- function(input, output, session, variable = NULL, name = "") {
         toReturn$trigger        <- ifelse(is.null(toReturn$trigger), 0, toReturn$trigger) + 1
         toReturn$transformation <- input$RB_funs
     })
-    
+
     return(toReturn)
 }
