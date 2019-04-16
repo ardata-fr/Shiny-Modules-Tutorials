@@ -5,7 +5,7 @@
 \title{show_data}
 \usage{
 show_data(input, output, session, variable = NULL,
-  variable_name = NULL, title = "Histogram & Summary")
+  variable_name = NULL, title = NULL)
 }
 \arguments{
 \item{input}{Not a real parameter, should not be set manually. Done by callModule automatically.}

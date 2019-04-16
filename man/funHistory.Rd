@@ -4,7 +4,8 @@
 \alias{funHistory}
 \title{funHistory}
 \usage{
-funHistory(input, output, session, histo = NULL, name = "")
+funHistory(input, output, session, histo = NULL,
+  name = "Function historic")
 }
 \arguments{
 \item{input}{Not a real parameter, should not be set manually. Done by callModule automatically.}

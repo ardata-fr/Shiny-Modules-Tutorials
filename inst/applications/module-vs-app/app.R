@@ -7,9 +7,13 @@ ui <- fluidPage(
     fluidRow(
         column(12,
             h1("Data from Module to Application"),
-            load_dataUI(id = "mod1"),
+
+            # module UI
+            load_dataUI(id = "id1"),
             tags$hr(),
-            uiOutput("ui_PR_reults_print")
+
+            # Print the numeric vector
+            uiOutput("ui_PR_results_print")
         )
     )
 )
@@ -21,13 +25,15 @@ server <- function(input, output, session) {
     #   - variable (the numeric vector)
     #   - variable_name (name of the variable)
     #   - trigger (an integer that change when user clicks on "Load" in module, not used here)
-    results <- callModule(module = load_data, id = "mod1")
+    results <- callModule(module = load_data, id = "id1")
 
+    # Print results$variable
     output$PR_results_print <- renderPrint({
         print(results$variable)
     })
 
-    output$ui_PR_reults_print <- renderUI({
+    # Set the verbatimTextOutput inside renderUI with a title "h3"
+    output$ui_PR_results_print <- renderUI({
         if (is.null(results$variable)) {
             tags$span(class = "warn", "No dataset loaded")
         } else {

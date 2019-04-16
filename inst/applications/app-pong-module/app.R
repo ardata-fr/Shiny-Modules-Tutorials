@@ -11,11 +11,11 @@ ui <- fluidPage(
                 choices = colnames(iris)[which(sapply(iris, is.numeric))]),
 
             fluidRow(
-                column(6,
+                column(3,
                     # Apply a function on selected vector
                     apply_functionUI(id = "id1")
                 ),
-                column(6,
+                column(3,
                     # Show historic of applied function
                     funHistoryUI(id = "id2")
                 )
@@ -54,14 +54,14 @@ server <- function(input, output, session) {
     })
 
     # Show historic of function (rv$fun_historic) with module funHistory
-    callModule(module = funHistory, id = "id2",
-        histo = reactive(rv$fun_historic))
+    callModule(module = funHistory, id = "id2", histo = reactive(rv$fun_historic))
 
     # Print rv$variable
     output$PR_results_print <- renderPrint({
         print(rv$variable)
     })
 
+    # Set the verbatimTextOutput inside renderUI with a title "h3"
     output$ui_PR_reults_print <- renderUI({
         if (is.null(rv$variable)) {
             tags$span(class = "warn", "No dataset loaded")

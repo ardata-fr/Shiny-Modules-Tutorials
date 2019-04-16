@@ -19,7 +19,7 @@ listEx <- function() {
 #' \dontrun{
 #' runEx(app = "example1")
 #'}
-runEx <- function(app, showcase = FALSE) {
+runEx <- function(app, showcase = TRUE) {
     listApp <- list.files(system.file("applications", package = "shinyModulesTuto"))
     if (!app %in% listApp) {
         stop(paste("Valid examples are:", paste(listApp, collapse = ", ")))

@@ -10,6 +10,7 @@ Description: Examples Shiny application are accessable from this package.
     They use the modules contains in the package itself as functions.
 License: MIT + file LICENSE
 Encoding: UTF-8
-Imports: shiny, shinyjs, shinyWidgets, datasets, tools
+Imports: shiny, shinyjs, datasets, tools
+Suggests: shinyWidgets
 LazyData: true
 RoxygenNote: 6.1.1
