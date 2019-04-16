@@ -7,9 +7,9 @@ ui <- fluidPage(
     useShinyjs(),
     loadModulesCSS("modules_styling.css"),
 
-    tags$h1("Example application related to blogpost ##"),
+    tags$h1("Application with multiple modules using the same reactive"),
     tags$br(),
-    
+
     fluidRow(
         column(4,
             panel(
@@ -69,7 +69,7 @@ server <- function(input, output, session) {
         #   - (Re)Init history of functions rv$fun_history
         observeEvent(data_mod1$trigger, {
             req(data_mod1$trigger>0)
-            rv$variable     <- data_mod1$variable
+            rv$variable    <- data_mod1$variable
             rv$fun_history <- c()
         })
     }
@@ -88,7 +88,7 @@ server <- function(input, output, session) {
         #   - Update rv$fun_history with module output "fun"
         observeEvent(data_mod2$trigger, {
             req(data_mod2$trigger>0)
-            rv$variable     <- data_mod2$result
+            rv$variable    <- data_mod2$result
             rv$fun_history <- c(rv$fun_history, data_mod2$fun)
         })
     }
@@ -107,7 +107,7 @@ server <- function(input, output, session) {
         #   - Update rv$fun_history with "scale"
         observeEvent(data_mod3$trigger, {
             req(data_mod3$trigger>0)
-            rv$variable     <- data_mod3$result
+            rv$variable    <- data_mod3$result
             rv$fun_history <- c(rv$fun_history, "scale")
         })
     }
