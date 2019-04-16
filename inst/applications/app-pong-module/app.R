@@ -17,6 +17,7 @@ ui <- fluidPage(
                 ),
                 column(3,
                     # Show historic of applied function
+                    tags$h3("Functions history"),
                     funHistoryUI(id = "id2")
                 )
             ),
@@ -75,5 +76,5 @@ server <- function(input, output, session) {
 }
 
 # Run the application
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server, options = list(display.mode = "showcase"))
 

@@ -24,7 +24,7 @@ server <- function(input, output, session) {
     # 3 slots returned :
     #   - variable (the numeric vector)
     #   - variable_name (name of the variable)
-    #   - trigger (an integer that change when user clicks on "Load" in module, not used here)
+    #   - trigger (not used here)
     results <- callModule(module = load_data, id = "id1")
 
     # Print results$variable
