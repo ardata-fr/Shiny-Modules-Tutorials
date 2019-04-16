@@ -5,7 +5,7 @@
 \title{show_data}
 \usage{
 show_data(input, output, session, variable = NULL,
-  variable_name = NULL, title = NULL)
+  variable_name = NULL, useggplot = FALSE)
 }
 \arguments{
 \item{input}{Not a real parameter, should not be set manually. Done by callModule automatically.}
@@ -18,7 +18,7 @@ show_data(input, output, session, variable = NULL,
 
 \item{variable_name}{Reactive character}
 
-\item{title}{Non-reactive character}
+\item{useggplot}{Boolean if use ggplot or basic hist function}
 }
 \value{
 Server logic

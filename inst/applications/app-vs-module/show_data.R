@@ -22,8 +22,8 @@ show_dataUI <- function(id) {
 
     fluidRow(
         column(12,
-            uiOutput(ns("ui_DIV_title")),
             uiOutput(ns("ui_PL_histogram_var")),
+            uiOutput(ns("ui_SLI_nb_bins")),
             verbatimTextOutput(ns("PR_summary_var"))
         )
     )
@@ -41,7 +41,7 @@ show_dataUI <- function(id) {
 #' @param session Not a real parameter, should not be set manually. Done by callModule automatically.
 #' @param variable Reactive numeric vector
 #' @param variable_name Reactive character
-#' @param title Non-reactive character
+#' @param useggplot Boolean if use ggplot or basic hist function
 #' @return Server logic
 #' @examples
 #' \dontrun{
@@ -50,13 +50,27 @@ show_dataUI <- function(id) {
 #' # In Server
 #' data_module1 <- callModule(module = show_data, id = "mod3", variable = variable, variable_name = variable_name)
 #'}
-show_data <- function(input, output, session, variable = NULL, variable_name = NULL, title = NULL) {
+show_data <- function(input, output, session, variable = NULL, variable_name = NULL, useggplot = FALSE) {
 
     ns <- session$ns
-
+    
+    # If useggplot, then SliderInput for number of bins
+    output$ui_SLI_nb_bins <- renderUI({
+        if (!is.null(variable()) && useggplot) {
+            sliderInput(ns("SLI_nb_bins"), label = "Number of bins", min = 5, max = 100, value = 30)
+        }
+    })
+    
     # Histogram
     output$PL_histogram_var <- renderPlot({
-        hist(variable(), main = variable_name(), xlab = NULL)
+        if (useggplot) {
+            require(ggplot2)
+            qplot(variable(), geom = "histogram", 
+                bins = input$SLI_nb_bins, main = "", xlab = variable_name(),
+                fill = I("blue"), col = I("red"), alpha = I(0.2))
+        } else {
+            hist(variable(), main = variable_name(), xlab = NULL)
+        }
     })
 
     # Use a renderUI of renderPlot to print "no dataset loaded" if no data
@@ -72,10 +86,5 @@ show_data <- function(input, output, session, variable = NULL, variable_name = N
     output$PR_summary_var <- renderPrint({
         req(variable())
         print(summary(variable()))
-    })
-
-    # Title
-    output$ui_DIV_title <- renderUI({
-        if (!is.null(title)) h4(title)
     })
 }

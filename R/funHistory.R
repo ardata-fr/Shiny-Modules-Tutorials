@@ -14,7 +14,7 @@
 #' funHistoryUI(id = "id")
 #'
 #' # In Server
-#' callModule(module = funHistory, id = "id", histo = reactive(histo$fun_applied_x), name = "X vector")
+#' callModule(module = funHistory, id = "id", histo = reactive(rv$fun_historic))
 #'}
 funHistoryUI <- function(id) {
     ns <- NS(id)
@@ -37,7 +37,6 @@ funHistoryUI <- function(id) {
 #' @param output Not a real parameter, should not be set manually. Done by callModule automatically.
 #' @param session Not a real parameter, should not be set manually. Done by callModule automatically.
 #' @param histo Numeric. Vector containing function applied.
-#' @param name Character. Name of the variable (used only on UI part).
 #' @return Server logic
 #' @examples
 #' \dontrun{
@@ -45,14 +44,14 @@ funHistoryUI <- function(id) {
 #' funHistoryUI(id = "id")
 #'
 #' # In Server
-#' callModule(module = funHistory, id = "id", histo = reactive(histo$fun_applied_x), name = "X vector")
+#' callModule(module = funHistory, id = "id", histo = reactive(rv$fun_historic))
 #'}
-funHistory <- function(input, output, session, histo = NULL, name = "Function historic") {
+funHistory <- function(input, output, session, histo = NULL) {
+
     ns <- session$ns
 
     output$ui_DIV_history <- renderUI({
         tags$div(
-            h4(name),
             if (length(histo()) > 0) {
                 tags$ul(HTML(sapply(histo(), function(x) as.character(tags$li(x)))))
             }

@@ -20,8 +20,8 @@ load_dataUI <- function(id) {
     shinyjs::useShinyjs()
     fluidRow(
         column(12,
-            selectInput(ns("SI_dataset"), label = "dataset", choices = datasets(), selected = "iris"),
-            selectInput(ns("SI_var"), label = "choose variable", choices = NULL),
+            selectInput(ns("SI_dataset"), label = "Dataset", choices = datasets(), selected = "iris"),
+            selectInput(ns("SI_var"), label = "Choose variable", choices = NULL),
             shinyjs::disabled(actionButton(ns("AB_load"), label = "(Re) load !"))
         )
     )

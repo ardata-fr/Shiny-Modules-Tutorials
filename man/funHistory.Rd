@@ -4,8 +4,7 @@
 \alias{funHistory}
 \title{funHistory}
 \usage{
-funHistory(input, output, session, histo = NULL,
-  name = "Function historic")
+funHistory(input, output, session, histo = NULL)
 }
 \arguments{
 \item{input}{Not a real parameter, should not be set manually. Done by callModule automatically.}
@@ -15,8 +14,6 @@ funHistory(input, output, session, histo = NULL,
 \item{session}{Not a real parameter, should not be set manually. Done by callModule automatically.}
 
 \item{histo}{Numeric. Vector containing function applied.}
-
-\item{name}{Character. Name of the variable (used only on UI part).}
 }
 \value{
 Server logic
@@ -32,6 +29,6 @@ This function has to be set in the Server part of a shiny application
 funHistoryUI(id = "id")
 
 # In Server
-callModule(module = funHistory, id = "id", histo = reactive(histo$fun_applied_x), name = "X vector")
+callModule(module = funHistory, id = "id", histo = reactive(rv$fun_historic))
 }
 }

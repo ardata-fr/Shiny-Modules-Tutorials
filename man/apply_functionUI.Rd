@@ -25,7 +25,6 @@ apply_functionUI(id = "mod2")
 # In Server
 data_module2   <- callModule(module = apply_function,
                              id = "mod2",
-                             variable = reactive(dataset$data_var_x),
-                             name = "Axis X")
+                             variable = reactive(dataset$data_var_x))
 }
 }

@@ -4,7 +4,7 @@
 \alias{apply_function}
 \title{apply_function}
 \usage{
-apply_function(input, output, session, variable = NULL, name = "")
+apply_function(input, output, session, variable = NULL)
 }
 \arguments{
 \item{input}{Not a real parameter, should not be set manually. Done by callModule automatically.}
@@ -14,8 +14,6 @@ apply_function(input, output, session, variable = NULL, name = "")
 \item{session}{Not a real parameter, should not be set manually. Done by callModule automatically.}
 
 \item{variable}{Numeric. Vector containing dataset to apply function on.}
-
-\item{name}{Character. Name of the variable (used only on UI part).}
 }
 \value{
 Server logic
@@ -32,7 +30,6 @@ apply_functionUI(id = "mod2")
 # In Server
 data_module2   <- callModule(module = apply_function,
                              id = "mod2",
-                             variable = reactive(dataset$data_var_x),
-                             name = "Axis X")
+                             variable = reactive(dataset$data_var_x))
 }
 }

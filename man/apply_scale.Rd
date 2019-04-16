@@ -4,7 +4,7 @@
 \alias{apply_scale}
 \title{apply_scaleUI}
 \usage{
-apply_scale(input, output, session, variable = NULL, name = "")
+apply_scale(input, output, session, variable = NULL)
 }
 \arguments{
 \item{input}{Not a real parameter, should not be set manually. Done by callModule automatically.}
@@ -14,8 +14,6 @@ apply_scale(input, output, session, variable = NULL, name = "")
 \item{session}{Not a real parameter, should not be set manually. Done by callModule automatically.}
 
 \item{variable}{Numeric. Vector containing dataset to apply function on.}
-
-\item{name}{Character. Name of the variable (used only on UI part).}
 }
 \value{
 Server logic
@@ -30,9 +28,7 @@ This function has to be set in the UI part of a shiny application
 # In UI :
 apply_scaleUI(id = "mod4")
 # In Server
-data_module4   <- callModule(module = apply_scale,
-                             id = "mod4",
-                             variable = reactive(dataset$data_var_x),
-                             name = "Axis X")
+data_module4   <- callModule(module = apply_scale, id = "mod4",
+                      variable = reactive(rv$variable))
 }
 }

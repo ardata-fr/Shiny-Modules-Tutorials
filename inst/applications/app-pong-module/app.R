@@ -40,17 +40,17 @@ server <- function(input, output, session) {
 
     # Module apply_function return reactiveValues with 3 slots :
     #   - result contains the numeric vector updated by function
-    #   - transformation contains the name of the function applied
+    #   - fun contains the name of the function applied
     #   - trigger increases every time user apply a function
     modified_data <-    callModule(module = apply_function, id = "id1",
                             variable = reactive(rv$variable))
 
     # When applied function (trigger change):
     #   - Replace rv$variable by modified_data$result
-    #   - Add modified_data$transformation in rv$fun_historic
+    #   - Add modified_data$fun in rv$fun_historic
     observeEvent(modified_data$trigger, {
         rv$variable     <- modified_data$result
-        rv$fun_historic <- c(rv$fun_historic, modified_data$transformation)
+        rv$fun_historic <- c(rv$fun_historic, modified_data$fun)
     })
 
     # Show historic of function (rv$fun_historic) with module funHistory

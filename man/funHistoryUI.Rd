@@ -24,6 +24,6 @@ apply_function function has to be set in the Server part.
 funHistoryUI(id = "id")
 
 # In Server
-callModule(module = funHistory, id = "id", histo = reactive(histo$fun_applied_x), name = "X vector")
+callModule(module = funHistory, id = "id", histo = reactive(rv$fun_historic))
 }
 }

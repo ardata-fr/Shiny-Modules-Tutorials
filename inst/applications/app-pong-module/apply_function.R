@@ -15,8 +15,7 @@
 #' # In Server
 #' data_module2   <- callModule(module = apply_function,
 #'                              id = "mod2",
-#'                              variable = reactive(dataset$data_var_x),
-#'                              name = "Axis X")
+#'                              variable = reactive(dataset$data_var_x))
 #'}
 apply_functionUI <- function(id) {
     ns <- NS(id)
@@ -41,7 +40,6 @@ apply_functionUI <- function(id) {
 #' @param output Not a real parameter, should not be set manually. Done by callModule automatically.
 #' @param session Not a real parameter, should not be set manually. Done by callModule automatically.
 #' @param variable Numeric. Vector containing dataset to apply function on.
-#' @param name Character. Name of the variable (used only on UI part).
 #' @return Server logic
 #' @examples
 #' \dontrun{
@@ -50,10 +48,10 @@ apply_functionUI <- function(id) {
 #' # In Server
 #' data_module2   <- callModule(module = apply_function,
 #'                              id = "mod2",
-#'                              variable = reactive(dataset$data_var_x),
-#'                              name = "Axis X")
+#'                              variable = reactive(dataset$data_var_x))
 #'}
-apply_function <- function(input, output, session, variable = NULL, name = "") {
+apply_function <- function(input, output, session, variable = NULL) {
+
     ns <- session$ns
 
     # Warning if no data loaded
@@ -86,7 +84,7 @@ apply_function <- function(input, output, session, variable = NULL, name = "") {
     # ReactiveValue to return
     toReturn <- reactiveValues( result = NULL,
                                 trigger = NULL,
-                                transformation = NULL)
+                                fun = NULL)
 
     # Apply function on variable
     observeEvent(input$AB_apply, {
@@ -97,8 +95,8 @@ apply_function <- function(input, output, session, variable = NULL, name = "") {
         } else if (input$RB_funs == "sqrt") {
             toReturn$result <- sqrt(variable())
         }
-        toReturn$trigger        <- ifelse(is.null(toReturn$trigger), 0, toReturn$trigger) + 1
-        toReturn$transformation <- input$RB_funs
+        toReturn$trigger <- ifelse(is.null(toReturn$trigger), 0, toReturn$trigger) + 1
+        toReturn$fun     <- input$RB_funs
     })
 
     return(toReturn)

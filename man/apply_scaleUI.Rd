@@ -24,7 +24,6 @@ apply_scaleUI(id = "mod4")
 # In Server
 data_module4   <- callModule(module = apply_scale,
                              id = "mod4",
-                             variable = reactive(dataset$data_var_x),
-                             name = "Axis X")
+                             variable = reactive(dataset$data_var_x))
 }
 }

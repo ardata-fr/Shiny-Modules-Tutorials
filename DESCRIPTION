@@ -11,6 +11,6 @@ Description: Examples Shiny application are accessable from this package.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Imports: shiny, shinyjs, datasets, tools
-Suggests: shinyWidgets
+Suggests: shinyWidgets, ggplot2
 LazyData: true
 RoxygenNote: 6.1.1
