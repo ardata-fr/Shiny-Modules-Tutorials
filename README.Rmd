@@ -1,0 +1,58 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+## Install the package
+
+````{r, eval = FALSE}
+# install.packages("remotes")
+remotes::install_github("ardata-fr/Shiny-Modules-Tutorials")
+````
+
+## List & run Shiny applications examples
+
+````{r, eval = FALSE}
+library(shinyModulesTuto)
+listEx()
+runEx(listEx()[1])
+````
+
+## List of examples applications :
+
+* Data from Application to Module, [Online app](https://qfazille.shinyapps.io/app-vs-module/)
+
+````{r, eval = FALSE}
+runEx("app-vs-module")
+````
+
+* Data from Module to Application, [Online app](https://qfazille.shinyapps.io/module-vs-app/)
+
+````{r, eval = FALSE}
+runEx("module-vs-app")
+````
+
+
+* Data from Application updated in Module, [Online app](https://qfazille.shinyapps.io/app-pong-module/)
+
+````{r, eval = FALSE}
+runEx("app-pong-module")
+````
+
+* Application with all examples, [Online app](https://qfazille.shinyapps.io/whole-app/)
+
+````{r, eval = FALSE}
+runEx("whole-app")
+````
+
+![](./inst/www/whole-app.gif)
