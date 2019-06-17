@@ -32,6 +32,8 @@ show_dataUI <- function(id) {
 #' @export
 #' @import shiny
 #' @importFrom shinyjs enable disable disabled
+#' @importFrom ggplot2 qplot
+#' @importFrom graphics hist
 #' @title show_data
 #' @description This function has to be set in the Server part of a shiny application
 #'     it adds the load data windows.
@@ -48,24 +50,28 @@ show_dataUI <- function(id) {
 #' # In UI :
 #' show_dataUI(id = "mod1")
 #' # In Server
-#' data_module1 <- callModule(module = show_data, id = "mod3", variable = variable, variable_name = variable_name)
+#' data_module1 <- callModule(
+#'   module = show_data,
+#'   id = "mod3",
+#'   variable = variable,
+#'   variable_name = variable_name
+#' )
 #'}
 show_data <- function(input, output, session, variable = NULL, variable_name = NULL, useggplot = FALSE) {
 
     ns <- session$ns
-    
+
     # If useggplot, then SliderInput for number of bins
     output$ui_SLI_nb_bins <- renderUI({
         if (!is.null(variable()) && useggplot) {
             sliderInput(ns("SLI_nb_bins"), label = "Number of bins", min = 5, max = 100, value = 30)
         }
     })
-    
+
     # Histogram
     output$PL_histogram_var <- renderPlot({
         if (useggplot) {
-            require(ggplot2)
-            qplot(variable(), geom = "histogram", 
+            qplot(variable(), geom = "histogram",
                 bins = input$SLI_nb_bins, main = "", xlab = variable_name(),
                 fill = I("blue"), col = I("red"), alpha = I(0.2))
         } else {

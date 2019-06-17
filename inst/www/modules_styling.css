@@ -23,3 +23,8 @@
 .dropdown {
     padding-right: 10px;
 }
+
+.sum_title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
