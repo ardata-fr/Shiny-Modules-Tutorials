@@ -42,7 +42,7 @@ server <- function(input, output, session) {
             data = data_mod1$data,
             data_name = data_mod1$data_name
         )
-        rv$all_ui[[data_mod1$trigger]] <<- data_infoUI(id = data_mod1$trigger)
+        rv$all_ui[[data_mod1$trigger]] <- data_infoUI(id = data_mod1$trigger)
     })
 
     output$all_results <- renderUI({
