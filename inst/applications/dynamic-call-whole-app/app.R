@@ -52,7 +52,7 @@ server <- function(input, output, session) {
     # Fonction addTab to add a new tab
     addTab <- function(id, name, data) {
         # call mainInterface
-        res[[id]] <<- callModule(
+        res[[paste(id)]] <<- callModule(
             module = merge_modules,
             id = id,
             data = data,
@@ -88,7 +88,7 @@ server <- function(input, output, session) {
     closeTab <- function(id) {
         # Remove tab from UI
         removeTab(inputId = "all_tabs", target = paste(id))
-        res[[id]] <<- NULL
+        res[[paste(id)]] <<- NULL
         trick(trick() + 1)
     }
 
