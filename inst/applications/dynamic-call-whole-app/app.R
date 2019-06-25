@@ -1,6 +1,6 @@
 library(shiny)
 library(shinyjs)
-require(shinyWidgets)
+library(shinyWidgets)
 library(shinyModulesTuto)
 
 ui <- fluidPage(
@@ -49,6 +49,18 @@ server <- function(input, output, session) {
 
     obs_close <- list()
 
+    # Function to add a cross after tabPanel title
+    tabTitle <- function(name, id) {
+        tags$span(
+            name, HTML("&nbsp;"),
+            tags$span(
+                id = paste0("close", id),
+                class = "close",
+                HTML("&times;")
+            )
+        )
+    }
+
     # Fonction addTab to add a new tab
     addTab <- function(id, name, data) {
         # call mainInterface
@@ -63,14 +75,7 @@ server <- function(input, output, session) {
         appendTab(
             inputId = "all_tabs",
             tabPanel(
-                title = tags$span(
-                    name, HTML("&nbsp;"),
-                    tags$span(
-                        id = paste0("close", id),
-                        class = "close",
-                        HTML("&times;")
-                    )
-                ),
+                title = tabTitle(name, id),
                 value = id,
                 tags$br(),
                 merge_modulesUI(id = id)
@@ -94,13 +99,11 @@ server <- function(input, output, session) {
 
     observeEvent(data_mod1$trigger, {
         req(data_mod1$trigger>0)
-        id <- data_mod1$trigger
-        name <- data_mod1$variable_name
-        data <- data_mod1$variable
+
         addTab(
-            id = id,
-            name = name,
-            data = data
+            id = data_mod1$trigger,
+            name = data_mod1$variable_name,
+            data = data_mod1$variable
         )
     })
 

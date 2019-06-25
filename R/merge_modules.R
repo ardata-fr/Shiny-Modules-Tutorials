@@ -12,9 +12,9 @@
 #' merge_modulesUI(id = "id1")
 #' # In Server
 #' data_module1 <- callModule(
-#'   module = merge_modules, 
-#'   id = "id1", 
-#'   data = iris$Sepal.Length, 
+#'   module = merge_modules,
+#'   id = "id1",
+#'   data = iris$Sepal.Length,
 #'   name = "Sepal.Length")
 #'}
 merge_modulesUI <- function(id) {
@@ -23,37 +23,29 @@ merge_modulesUI <- function(id) {
     tagList(
         fluidRow(
             column(
-                width = 4,
+                width = 6,
                 panel(
                     heading = "Module : apply_function",
                     status = "warning",
                     apply_functionUI(id = ns("mod2"))
-                )
-            ),
-            column(
-                width = 4,
+                ),
                 panel(
                     heading = "Module : apply_scale",
                     status = "danger",
                     apply_scaleUI(id = ns("mod3"))
-                )
-            )
-        ),
-        fluidRow(
-            column(
-                width = 4,
-                panel(
-                    heading = "Module : show_data",
-                    status = "success",
-                    show_dataUI(id = ns("mod4"))
-                )
-            ),
-            column(
-                width = 4,
+                ),
                 panel(
                     heading = "Module : funHistory",
                     status = "default",
                     funHistoryUI(id = ns("mod5"))
+                )
+            ),
+            column(
+                width = 6,
+                panel(
+                    heading = "Module : show_data",
+                    status = "success",
+                    show_dataUI(id = ns("mod4"))
                 )
             )
         )
@@ -79,9 +71,9 @@ merge_modulesUI <- function(id) {
 #' merge_modulesUI(id = "id1")
 #' # In Server
 #' data_module1 <- callModule(
-#'   module = merge_modules, 
-#'   id = "id1", 
-#'   data = iris$Sepal.Length, 
+#'   module = merge_modules,
+#'   id = "id1",
+#'   data = iris$Sepal.Length,
 #'   name = "Sepal.Length")
 #'}
 merge_modules <- function(input, output, session, data, name) {
@@ -155,12 +147,12 @@ merge_modules <- function(input, output, session, data, name) {
     {
         # Call module funHistory
         callModule(
-            module = funHistory, 
-            id = "mod5", 
+            module = funHistory,
+            id = "mod5",
             histo = reactive(rv$fun_history)
         )
     }
-    
+
     #############+
     ## Return ####
     #############+
@@ -168,12 +160,12 @@ merge_modules <- function(input, output, session, data, name) {
         # The module return a reactiveValues with 2 slots :
         #   - number of functions applied
         toReturn <- reactiveValues(name = NULL, nb_funs = 0)
-        
+
         observe({
             toReturn$name <- name
             toReturn$nb_funs <- length(rv$fun_history)
         })
-        
+
         return(toReturn)
     }
 }

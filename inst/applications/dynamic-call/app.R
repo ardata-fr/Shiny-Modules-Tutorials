@@ -1,6 +1,6 @@
 library(shiny)
 library(shinyjs)
-require(shinyWidgets)
+library(shinyWidgets)
 library(shinyModulesTuto)
 
 ui <- fluidPage(
